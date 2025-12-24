@@ -7,7 +7,7 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
-<div class="md:w-3/4 max-w-7xl flex items-center flex-col m-auto w-full justify-center">
+<div class="md:w-3/4 max-w-4xl flex items-center flex-col m-auto w-full justify-center">
 	
 	<div class="navbar bg-base-100 shadow-sm">
 		<div class="navbar-start">
@@ -54,10 +54,4 @@
 
 	{@render children()}
 
-	<div class="join grid grid-cols-4 md:w-4/5 mt-2">
-		<button class="join-item btn btn-outline">First</button>
-		<button class="join-item btn btn-outline">Previous</button>
-		<button class="join-item btn btn-outline">Next</button>
-		<button class="join-item btn btn-outline">Last</button>
-	</div>
 </div>

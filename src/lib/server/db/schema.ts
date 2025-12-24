@@ -19,7 +19,7 @@ export const pages = pgTable('pages', {
 	chapterId: integer(),
 	tags: text(),
 	comment: text(),
-	next: varchar({ length: 255 }).notNull()
+	next: varchar({ length: 255 })
 });
 
 export const chapters = pgTable('chapters', {

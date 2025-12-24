@@ -11,12 +11,11 @@ export const actions = {
 		// upload
 		const formData = await request.formData();
 		const uploadedFile = formData?.get('file') as File;
-		const filename = `uploads/${crypto.randomUUID()}${extname(uploadedFile?.name)}`;
+		const filename = `/uploads/${crypto.randomUUID()}${extname(uploadedFile?.name)}`;
 		await writeFile(filename, Buffer.from(await uploadedFile?.arrayBuffer()));
 
 		const title = formData?.get('title') as string;
 		const slug = formData?.get('slug') as string;
-		const next = ''; // TODO: optional if we want to insert a page later on
 
 		// update previous page's 'next' with this page's slug
 		const previous = await db.select().from(pages).orderBy(desc(pages.createdAt)).limit(1);
@@ -24,7 +23,7 @@ export const actions = {
 			await db.update(pages).set({ next: slug }).where(eq(pages.slug, previous[0].slug));
 		}
 		// write to db
-		await db.insert(pages).values({ url: filename, title, slug, next });
+		await db.insert(pages).values({ url: filename, title, slug });
 
 		return { success: true };
 	}
