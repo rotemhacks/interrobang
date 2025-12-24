@@ -1,5 +1,5 @@
 <script lang="ts">
-	import createSlug from '$lib/utils/stringUtils';
+	import { createSlug } from '$lib/utils/stringUtils';
 
 	let title = $state('');
 	let slug = $derived(createSlug(title));
