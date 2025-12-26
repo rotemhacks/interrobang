@@ -8,6 +8,8 @@ import { extname } from 'path';
 export const actions = {
 	default: async ({ request }) => {
 		// TODO: try/catch/finally
+		// TODO: validation
+
 		// upload
 		const formData = await request.formData();
 		const uploadedFile = formData?.get('file') as File;
@@ -16,6 +18,8 @@ export const actions = {
 
 		const title = formData?.get('title') as string;
 		const slug = formData?.get('slug') as string;
+		const pagenum = Number(formData?.get('pagenum'));
+		const comment = formData?.get('comment') as string;
 
 		// update previous page's 'next' with this page's slug
 		const previous = await db.select().from(pages).orderBy(desc(pages.createdAt)).limit(1);
@@ -23,7 +27,7 @@ export const actions = {
 			await db.update(pages).set({ next: slug }).where(eq(pages.slug, previous[0].slug));
 		}
 		// write to db
-		await db.insert(pages).values({ url: filename, title, slug });
+		await db.insert(pages).values({ url: filename, title, slug, pagenum, comment });
 
 		return { success: true };
 	}

@@ -14,10 +14,9 @@ export const pages = pgTable('pages', {
 	createdAt: timestamp().default(sql`now()`),
 	title: varchar({ length: 255 }).notNull(),
 	slug: varchar({ length: 255 }).notNull().unique(),
-	number: integer(), // is this necessary?
+	pagenum: integer().unique(),
 	url: varchar({ length: 255 }).notNull(),
 	chapterId: integer(),
-	tags: text(),
 	comment: text(),
 	next: varchar({ length: 255 })
 });
