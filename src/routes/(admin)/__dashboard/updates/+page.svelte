@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { createSlug } from '$lib/utils/stringUtils';
 
+	const { data } = $props();
+
 	let title = $state('');
 	let slug = $derived(createSlug(title));
-	let pagenum = $state(); // get latest page number +1
+	let pagenum = $derived(data.page?.pagenum ? data.page?.pagenum + 1 : null);
 	let comment = $state('');
+	let chapterId = $state();
 </script>
 
-<h2>Updates</h2>
+<h2 class="mb-4 text-xl">Manage Updates</h2>
 
 <form method="POST" enctype="multipart/form-data" class="flex w-lg flex-col gap-2">
 	<label>
@@ -28,6 +31,15 @@
 	<label>
 		<span>Page number:</span>
 		<input type="number" name="pagenum" class="input" bind:value={pagenum} />
+	</label>
+
+	<label>
+		<span>Chapter:</span>
+		<select name="chapterId" class="select" bind:value={chapterId} required>
+			{#each data.chapters as chap (chap.id)}
+				<option>{chap.chapnum}: {chap.title}</option>
+			{/each}
+		</select>
 	</label>
 
 	<label>

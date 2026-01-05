@@ -24,12 +24,14 @@ export const pages = pgTable('pages', {
 export const chapters = pgTable('chapters', {
 	id: serial('id').primaryKey(),
 	title: varchar({ length: 255 }),
+	chapnum: integer().unique(),
 	volumeId: integer()
 });
 
 export const volumes = pgTable('volumes', {
 	id: serial('id').primaryKey(),
-	title: varchar({ length: 255 })
+	title: varchar({ length: 255 }),
+	volnum: integer().unique()
 });
 
 // Extra features tables

@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
-import { pages } from '$lib/server/db/schema.js';
-import { desc, eq } from 'drizzle-orm';
+import { chapters, pages } from '$lib/server/db/schema.js';
+import { desc, eq, isNull } from 'drizzle-orm';
 import { writeFile } from 'node:fs/promises';
 import { extname } from 'path';
 
@@ -31,4 +31,16 @@ export const actions = {
 
 		return { success: true };
 	}
+};
+
+export const load = async () => {
+	// latest page for page number
+	const page = await db.select().from(pages).where(isNull(pages.next)).limit(1);
+	// chapters for.. chapters
+	const chaps = await db.select().from(chapters);
+
+	return {
+		page: page[0],
+		chapters: chaps
+	};
 };
