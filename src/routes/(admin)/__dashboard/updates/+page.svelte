@@ -5,7 +5,7 @@
 
 	let title = $state('');
 	let slug = $derived(createSlug(title));
-	let pagenum = $derived(data.page?.pagenum ? data.page?.pagenum + 1 : null);
+	let pagenum = $derived(data.page?.pagenum ? data.page?.pagenum + 1 : 1);
 	let comment = $state('');
 	let chapterId = $state();
 </script>
@@ -37,7 +37,7 @@
 		<span>Chapter:</span>
 		<select name="chapterId" class="select" bind:value={chapterId} required>
 			{#each data.chapters as chap (chap.id)}
-				<option>{chap.chapnum}: {chap.title}</option>
+				<option value={chap.id}>{chap.chapnum}: {chap.title}</option>
 			{/each}
 		</select>
 	</label>

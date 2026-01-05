@@ -21,8 +21,10 @@ export const actions = {
 
 export const load = async () => {
 	const vols = await db.select().from(volumes).orderBy(desc(volumes.volnum));
+	const chaps = await db.select().from(chapters).orderBy(desc(chapters.chapnum));
 
 	return {
-		volumes: vols
+		volumes: vols,
+		chapters: chaps
 	};
 };

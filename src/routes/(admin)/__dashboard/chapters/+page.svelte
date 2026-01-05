@@ -2,7 +2,7 @@
 	const { data } = $props();
 
 	let title = $state('');
-	let chapnum = $state();
+	let chapnum = $derived(data.chapters[0] ? Number(data.chapters[0].chapnum) + 1 : 1);
 	let volumeId = $derived(data.volumes[0] ? data.volumes[0]?.id : null);
 </script>
 
