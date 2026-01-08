@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+
 	const { data } = $props();
 </script>
 
@@ -10,9 +12,9 @@
 	<p>{@html data.page.comment}</p>
 {/if}
 
-<div class="join grid grid-cols-4 md:w-4/5 mt-2">
-	<button class="join-item btn btn-outline">First</button>
-	<a class="join-item btn btn-outline" href={`/comic/${data.previous?.slug}`} >Previous</a>
-	<button class="join-item btn btn-outline" disabled>Next</button>
-	<button class="join-item btn btn-outline" disabled>Last</button>
+<div class="join mt-2 grid grid-cols-4 md:w-4/5">
+	<button class="btn join-item btn-outline">First</button>
+	<a class="btn join-item btn-outline" href={resolve(`/comic/${data.previous?.slug}`)}>Previous</a>
+	<button class="btn join-item btn-outline" disabled>Next</button>
+	<button class="btn join-item btn-outline" disabled>Last</button>
 </div>

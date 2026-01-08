@@ -3,19 +3,27 @@ import { chapters, pages } from '$lib/server/db/schema.js';
 import { desc, eq, isNull } from 'drizzle-orm';
 import { writeFile } from 'node:fs/promises';
 import { extname } from 'path';
+import sharp from 'sharp';
 
 /** @type {import('./$types').Actions} */
 export const actions = {
 	default: async ({ request }) => {
-		// TODO: try/catch/finally
 		// TODO: validation
 
-		// upload
 		try {
+			// upload file
 			const formData = await request.formData();
 			const uploadedFile = formData?.get('file') as File;
-			const filename = `uploads/${crypto.randomUUID()}${extname(uploadedFile?.name)}`;
-			await writeFile(filename, Buffer.from(await uploadedFile?.arrayBuffer()));
+			const imagefilename = crypto.randomUUID() + extname(uploadedFile?.name);
+
+			const filename = `uploads/pages/${imagefilename}`;
+			const fileBuffer = Buffer.from(await uploadedFile?.arrayBuffer());
+			await writeFile(filename, fileBuffer);
+
+			// generate thumbnail and upload
+			const thumbname = `uploads/thumbs/${imagefilename}`;
+			const thumbBuffer = await sharp(fileBuffer).resize(150).toBuffer();
+			await writeFile(thumbname, thumbBuffer);
 
 			const title = formData?.get('title') as string;
 			const slug = formData?.get('slug') as string;
@@ -29,13 +37,19 @@ export const actions = {
 				await db.update(pages).set({ next: slug }).where(eq(pages.slug, previous[0].slug));
 			}
 			// write to db
-			await db
-				.insert(pages)
-				.values({ url: '/' + filename, title, slug, pagenum, comment, chapterId });
+			await db.insert(pages).values({
+				url: '/' + filename,
+				thumb: '/' + thumbname,
+				title,
+				slug,
+				pagenum,
+				comment,
+				chapterId
+			});
 
 			return { success: true };
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 			return { success: false, err };
 		}
 	}

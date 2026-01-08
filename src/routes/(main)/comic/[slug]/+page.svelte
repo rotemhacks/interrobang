@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+
 	const { data } = $props();
 </script>
 
@@ -7,12 +9,16 @@
 {/if}
 
 {#if data.page?.comment}
-  <p>{@html data.page.comment}</p>
+	<p>{@html data.page.comment}</p>
 {/if}
 
-<div class="join grid grid-cols-4 md:w-4/5 mt-2">
-	<button class="join-item btn btn-outline" disabled={!data.previous} >First</button>
-	<button class="join-item btn btn-outline" disabled={!data.previous} ><a href={`/comic/${data.previous?.slug}`} >Previous</a></button>
-	<button class="join-item btn btn-outline" disabled={!data.page.next}><a href={`/comic/${data.page.next}`}>Next</a></button>
-	<button class="join-item btn btn-outline"><a href="/">Last</a></button>
+<div class="join mt-2 grid grid-cols-4 md:w-4/5">
+	<button class="btn join-item btn-outline" disabled={!data.previous}>First</button>
+	<button class="btn join-item btn-outline" disabled={!data.previous}>
+		<a href={resolve(`/comic/${data.previous?.slug}`)}>Previous</a>
+	</button>
+	<button class="btn join-item btn-outline" disabled={!data.page.next}>
+		<a href={resolve(`/comic/${data.page.next}`)}>Next</a>
+	</button>
+	<button class="btn join-item btn-outline"><a href={resolve('/')}>Last</a></button>
 </div>
