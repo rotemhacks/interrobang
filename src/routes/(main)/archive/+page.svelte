@@ -1,4 +1,6 @@
 <script>
+	import { resolve } from '$app/paths';
+
 	const { data } = $props();
 </script>
 
@@ -10,7 +12,7 @@
 			<div class="bg-secondary"><span>{chapter.chapnum}: {chapter.title}</span></div>
 			<div class="flex flex-row gap-4">
 				{#each chapter.pages as page (page.id)}
-					<img src={page.thumb} alt={page.title} />
+					<a href={resolve(`/comic/${page.slug}`)}><img src={page.thumb} alt={page.title} /></a>
 				{/each}
 			</div>
 		{/each}
