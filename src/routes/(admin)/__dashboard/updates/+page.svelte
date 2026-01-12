@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { createSlug } from '$lib/utils/stringUtils';
+	import { Carta, MarkdownEditor } from 'carta-md';
+	import 'carta-md/default.css'; /* Default theme */
+	import DOMPurify from 'isomorphic-dompurify';
 
+	const carta = new Carta({
+		sanitizer: DOMPurify.sanitize
+	});
 	const { data } = $props();
 
 	let title = $state('');
@@ -29,8 +35,8 @@
 	</label>
 
 	<label>
-		<span>Page number:</span>
-		<input type="number" name="pagenum" class="input" bind:value={pagenum} />
+		<span>Page number:</span><span class="text-red-500">&nbsp;*</span>
+		<input type="number" name="pagenum" class="input" bind:value={pagenum} required />
 	</label>
 
 	<label>
@@ -44,7 +50,9 @@
 
 	<label>
 		<span>Comment:</span>
-		<textarea name="comment" class="textarea" bind:value={comment}></textarea>
+		<MarkdownEditor {carta} bind:value={comment} />
+		<!-- hidden field mirrors editor content -->
+		<input type="hidden" name="comment" value={comment} />
 	</label>
 
 	<button class="btn btn-neutral">Upload</button>

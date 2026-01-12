@@ -45,7 +45,7 @@
 					<li><a>About</a></li>
 				</ul>
 			</div>
-			<a class="btn text-xl btn-ghost" href={resolve('/')}>Interrobang</a>
+			<a class="btn text-3xl btn-ghost" href={resolve('/')}>Interrobang</a>
 		</div>
 		<div class="navbar-end hidden lg:flex">
 			<ul class="menu menu-horizontal px-1">
@@ -67,4 +67,6 @@
 	</div>
 
 	{@render children()}
+
+	<footer class="mt-8 self-center text-xs">Made with Interrobang</footer>
 </div>
