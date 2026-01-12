@@ -41,7 +41,7 @@ export const blogs = pgTable('blogs', {
 	createdAt: timestamp().default(sql`now()`),
 	title: varchar({ length: 255 }).notNull(),
 	slug: varchar({ length: 255 }).notNull().unique(),
-	text: text()
+	text: text().notNull()
 });
 
 export const tags = pgTable('tags', {

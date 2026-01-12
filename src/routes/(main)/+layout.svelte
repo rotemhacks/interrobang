@@ -8,7 +8,7 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
-<div class="m-auto flex w-full max-w-4xl flex-col items-center justify-center md:w-3/4">
+<div class="m-auto mb-8 flex w-full max-w-4xl flex-col items-center justify-center md:w-3/4">
 	<div class="navbar bg-base-100 shadow-sm">
 		<div class="navbar-start">
 			<div class="dropdown">

@@ -14,17 +14,17 @@
 
 <form method="POST" enctype="multipart/form-data" class="flex w-lg flex-col gap-2">
 	<label>
-		<span>Page file:</span>
+		<span>Page file:</span><span class="text-red-500">&nbsp;*</span>
 		<input type="file" name="file" class="file-input file-input-ghost" accept="image/*" required />
 	</label>
 
 	<label>
-		<span>Title:</span>
+		<span>Title:</span><span class="text-red-500">&nbsp;*</span>
 		<input type="text" name="title" class="input" bind:value={title} required />
 	</label>
 
 	<label>
-		<span>Slug:</span>
+		<span>Slug:</span><span class="text-red-500">&nbsp;*</span>
 		<input type="text" name="slug" class="input" bind:value={slug} required />
 	</label>
 
@@ -34,7 +34,7 @@
 	</label>
 
 	<label>
-		<span>Chapter:</span>
+		<span>Chapter:</span><span class="text-red-500">&nbsp;*</span>
 		<select name="chapterId" class="select" bind:value={chapterId} required>
 			{#each data.chapters as chap (chap.id)}
 				<option value={chap.id}>{chap.chapnum}: {chap.title}</option>

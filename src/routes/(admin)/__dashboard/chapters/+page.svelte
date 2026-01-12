@@ -10,17 +10,17 @@
 
 <form method="POST" enctype="multipart/form-data" class="flex w-lg flex-col gap-2">
 	<label>
-		<span>Chapter Number:</span>
+		<span>Chapter Number:</span><span class="text-red-500">&nbsp;*</span>
 		<input type="number" name="chapnum" class="input" bind:value={chapnum} required />
 	</label>
 
 	<label>
-		<span>Title:</span>
+		<span>Title:</span><span class="text-red-500">&nbsp;*</span>
 		<input type="text" name="title" class="input" bind:value={title} required />
 	</label>
 
 	<label>
-		<span>Volume:</span>
+		<span>Volume:</span><span class="text-red-500">&nbsp;*</span>
 		<select name="volumeId" class="select" bind:value={volumeId} required>
 			{#each data.volumes as vol (vol.id)}
 				<option value={vol.id}>{vol.volnum}: {vol.title}</option>

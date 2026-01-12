@@ -6,7 +6,7 @@
 
 	let { children } = $props();
 
-	const highlightedNav = 'rounded-md bg-white text-black';
+	const highlightedNav = 'rounded-md bg-primary text-white';
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
@@ -19,6 +19,7 @@
 			<li class={page.url.pathname === '/__dashboard' ? highlightedNav : ''}>
 				<a href={resolve('/__dashboard')}>Dashboard</a>
 			</li>
+			<hr />
 			<li class={page.url.pathname === '/__dashboard/updates' ? highlightedNav : ''}>
 				<a href={resolve('/__dashboard/updates')}>Updates</a>
 			</li>
@@ -28,6 +29,10 @@
 			<li class={page.url.pathname === '/__dashboard/volumes' ? highlightedNav : ''}>
 				<a href={resolve('/__dashboard/volumes')}>Volumes</a>
 			</li>
+			<hr />
+			<li class={page.url.pathname === '/__dashboard/blog' ? highlightedNav : ''}>
+				<a href={resolve('/__dashboard/blog')}>Blog</a>
+			</li>
 		</ul>
 	</nav>
 	<div>
@@ -36,6 +41,10 @@
 </div>
 
 <style>
+	ul {
+		list-style: none;
+	}
+
 	li {
 		padding: 0.5rem 1rem;
 	}

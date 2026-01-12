@@ -1,5 +1,11 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { Carta, Markdown } from 'carta-md';
+	import DOMPurify from 'isomorphic-dompurify';
+
+	const carta = new Carta({
+		sanitizer: DOMPurify.sanitize
+	});
 
 	const { data } = $props();
 </script>
@@ -9,7 +15,7 @@
 {/if}
 
 {#if data.page?.comment}
-	<p>{@html data.page.comment}</p>
+	<Markdown {carta} value={data.page?.comment} />
 {/if}
 
 <div class="join mt-2 grid grid-cols-4 md:w-4/5">
