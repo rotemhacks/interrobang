@@ -21,7 +21,7 @@
 	<label>
 		<MarkdownEditor {carta} bind:value={text} />
 		<!-- hidden field mirrors editor content -->
-		<input type="hidden" name="text" value={text} />
+		<input type="hidden" name="text" value={text} required />
 	</label>
 	<div>
 		<button class="btn btn-neutral">Create</button>

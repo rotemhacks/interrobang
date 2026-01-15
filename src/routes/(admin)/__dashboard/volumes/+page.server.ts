@@ -1,20 +1,26 @@
 import { db } from '$lib/server/db';
-import { volumes } from '$lib/server/db/schema';
+import { volumeInsertSchema, volumes } from '$lib/server/db/schema';
 import { desc } from 'drizzle-orm';
 
 export const actions = {
 	default: async ({ request }) => {
-		// TODO: try/catch/finally
-		// TODO: validation
+		try {
+			const formData = await request.formData();
+			const title = formData?.get('title') as string;
+			const volnum = Number(formData?.get('volnum'));
 
-		const formData = await request.formData();
-		const title = formData?.get('title') as string;
-		const volnum = Number(formData?.get('volnum'));
+			// validation
+			const data = { title, volnum };
+			const parsed = volumeInsertSchema.parse(data);
 
-		// write to db
-		await db.insert(volumes).values({ title, volnum });
+			// write to db
+			await db.insert(volumes).values(parsed);
 
-		return { success: true };
+			return { success: true };
+		} catch (err) {
+			console.error(err);
+			return { success: false, err };
+		}
 	}
 };
 

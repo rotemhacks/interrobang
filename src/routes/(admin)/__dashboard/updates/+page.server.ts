@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { chapters, pages } from '$lib/server/db/schema.js';
+import { chapters, pageInsertSchema, pages } from '$lib/server/db/schema.js';
 import { desc, eq, isNull } from 'drizzle-orm';
 import { writeFile } from 'node:fs/promises';
 import { extname } from 'path';
@@ -31,13 +31,7 @@ export const actions = {
 			const chapterId = Number(formData?.get('chapterId'));
 			const comment = formData?.get('comment') as string;
 
-			// update previous page's 'next' with this page's slug
-			const previous = await db.select().from(pages).where(isNull(pages.next)).limit(1);
-			if (previous[0]) {
-				await db.update(pages).set({ next: slug }).where(eq(pages.slug, previous[0].slug));
-			}
-			// write to db
-			await db.insert(pages).values({
+			const pageData = {
 				url: '/' + filename,
 				thumb: '/' + thumbname,
 				title,
@@ -45,7 +39,17 @@ export const actions = {
 				pagenum,
 				comment,
 				chapterId
-			});
+			};
+			// validation
+			const parsed = pageInsertSchema.parse(pageData);
+
+			// update previous page's 'next' with this page's slug
+			const previous = await db.select().from(pages).where(isNull(pages.next)).limit(1);
+			if (previous[0]) {
+				await db.update(pages).set({ next: slug }).where(eq(pages.slug, previous[0].slug));
+			}
+			// write to db
+			await db.insert(pages).values(parsed);
 
 			return { success: true };
 		} catch (err) {

@@ -1,5 +1,6 @@
 import { sql, relations } from 'drizzle-orm';
 import { integer, pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { createInsertSchema } from 'drizzle-zod';
 
 export const creator = pgTable('creator', {
 	id: serial('id').primaryKey(),
@@ -49,6 +50,7 @@ export const tags = pgTable('tags', {
 	tag: varchar({ length: 255 }).notNull().unique()
 });
 
+// Relations
 export const volumeRelations = relations(volumes, ({ many }) => ({
 	chapters: many(chapters)
 }));
@@ -67,3 +69,9 @@ export const pageRelations = relations(pages, ({ one }) => ({
 		references: [chapters.id]
 	})
 }));
+
+// validation schemas
+export const pageInsertSchema = createInsertSchema(pages);
+export const chapterInsertSchema = createInsertSchema(chapters);
+export const volumeInsertSchema = createInsertSchema(volumes);
+export const blogInsertSchema = createInsertSchema(blogs);
