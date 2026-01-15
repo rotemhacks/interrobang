@@ -1,15 +1,12 @@
 import { db } from '$lib/server/db';
-import { chapters, pageInsertSchema, pages } from '$lib/server/db/schema.js';
+import { chapters, pageInsertSchema, pages, volumes } from '$lib/server/db/schema.js';
 import { desc, eq, isNull } from 'drizzle-orm';
 import { writeFile } from 'node:fs/promises';
 import { extname } from 'path';
 import sharp from 'sharp';
 
-/** @type {import('./$types').Actions} */
 export const actions = {
 	default: async ({ request }) => {
-		// TODO: validation
-
 		try {
 			// upload file
 			const formData = await request.formData();
@@ -64,9 +61,21 @@ export const load = async () => {
 	const page = await db.select().from(pages).where(isNull(pages.next)).limit(1);
 	// chapters for.. chapters
 	const chaps = await db.select().from(chapters).orderBy(desc(chapters.chapnum));
+	const allPages = await db
+		.select({
+			page: pages,
+			chapter: chapters,
+			volume: volumes
+		})
+		.from(pages)
+		.innerJoin(chapters, eq(pages.chapterId, chapters.id))
+		.innerJoin(volumes, eq(chapters.volumeId, volumes.id))
+		.orderBy(desc(volumes.id), desc(chapters.id), desc(pages.pagenum));
 
+	console.log(allPages);
 	return {
 		page: page[0],
-		chapters: chaps
+		chapters: chaps,
+		pages: allPages
 	};
 };

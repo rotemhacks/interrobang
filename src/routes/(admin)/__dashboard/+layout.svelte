@@ -7,7 +7,7 @@
 	let { children } = $props();
 
 	const highlightedNav = 'bg-primary text-white';
-	const basicNav = 'rounded-md px-3 py-2 hover:bg-secondary';
+	const basicNav = 'rounded-md px-3 py-2 hover:bg-base-300';
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>

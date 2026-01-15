@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { createSlug } from '$lib/utils/stringUtils';
 	import { Carta, MarkdownEditor } from 'carta-md';
 	import 'carta-md/default.css'; /* Default theme */
@@ -57,3 +58,36 @@
 
 	<button class="btn btn-neutral">Upload</button>
 </form>
+
+<!-- TODO: Add pagination -->
+<h3 class="mt-10">All Updates</h3>
+<div class="mb-8 overflow-x-auto">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Thumb</th>
+				<th>Title</th>
+				<th>Chapter</th>
+				<th>Volume</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{#each data.pages as obj (obj.page.id)}
+				<tr class="hover:bg-base-300">
+					<td>{obj.page.pagenum}</td>
+					<th>
+						<a href={resolve(`/comic/${obj.page.slug}`)}>
+							<img src={obj.page.thumb} alt={obj.page.title} width="100px" />
+						</a>
+					</th>
+					<th>{obj.page.title}</th>
+					<th>Chapter {obj.chapter.chapnum}</th>
+					<th>Volume {obj.volume.volnum}</th>
+					<th>Actions</th>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+</div>
