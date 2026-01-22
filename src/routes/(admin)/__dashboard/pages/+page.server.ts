@@ -61,6 +61,7 @@ export const load = async () => {
 	const page = await db.select().from(pages).where(isNull(pages.next)).limit(1);
 	// chapters for.. chapters
 	const chaps = await db.select().from(chapters).orderBy(desc(chapters.chapnum));
+	// all pages for the table
 	const allPages = await db
 		.select({
 			page: pages,
@@ -72,7 +73,6 @@ export const load = async () => {
 		.innerJoin(volumes, eq(chapters.volumeId, volumes.id))
 		.orderBy(desc(volumes.id), desc(chapters.id), desc(pages.pagenum));
 
-	console.log(allPages);
 	return {
 		page: page[0],
 		chapters: chaps,

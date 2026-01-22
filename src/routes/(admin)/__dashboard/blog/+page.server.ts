@@ -4,9 +4,6 @@ import { createSlug } from '$lib/utils/stringUtils.js';
 
 export const actions = {
 	default: async ({ request }) => {
-		// TODO: try/catch/finally
-		// TODO: validation
-
 		try {
 			const formData = await request.formData();
 			const title = formData?.get('title') as string;

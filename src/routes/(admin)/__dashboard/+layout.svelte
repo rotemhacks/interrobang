@@ -24,10 +24,10 @@
 		</a>
 		<hr />
 		<a
-			href={resolve('/__dashboard/updates')}
-			class={`${basicNav} ${page.url.pathname === '/__dashboard/updates' ? highlightedNav : ''}`}
+			href={resolve('/__dashboard/pages')}
+			class={`${basicNav} ${page.url.pathname === '/__dashboard/pages' ? highlightedNav : ''}`}
 		>
-			Updates
+			Pages
 		</a>
 		<a
 			href={resolve('/__dashboard/chapters')}
@@ -49,7 +49,7 @@
 			Blog
 		</a>
 	</nav>
-	<div>
+	<div class="w-full">
 		{@render children()}
 	</div>
 </div>

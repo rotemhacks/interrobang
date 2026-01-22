@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 	import { createSlug } from '$lib/utils/stringUtils';
 	import { Carta, MarkdownEditor } from 'carta-md';
 	import 'carta-md/default.css'; /* Default theme */
@@ -8,16 +7,14 @@
 	const carta = new Carta({
 		sanitizer: DOMPurify.sanitize
 	});
-	const { data } = $props();
+	const { chapters, page } = $props();
 
 	let title = $state('');
 	let slug = $derived(createSlug(title));
-	let pagenum = $derived(data.page?.pagenum ? data.page?.pagenum + 1 : 1);
+	let pagenum = $derived(page?.pagenum ? page?.pagenum + 1 : 1);
 	let comment = $state('');
 	let chapterId = $state();
 </script>
-
-<h2 class="mb-4 text-xl">Manage Updates</h2>
 
 <form method="POST" enctype="multipart/form-data" class="flex w-lg flex-col gap-2">
 	<label>
@@ -43,7 +40,7 @@
 	<label>
 		<span>Chapter:</span><span class="text-red-500">&nbsp;*</span>
 		<select name="chapterId" class="select" bind:value={chapterId} required>
-			{#each data.chapters as chap (chap.id)}
+			{#each chapters as chap (chap.id)}
 				<option value={chap.id}>{chap.chapnum}: {chap.title}</option>
 			{/each}
 		</select>
@@ -56,38 +53,5 @@
 		<input type="hidden" name="comment" value={comment} />
 	</label>
 
-	<button class="btn btn-neutral">Upload</button>
+	<button class="btn btn-neutral">Create</button>
 </form>
-
-<!-- TODO: Add pagination -->
-<h3 class="mt-10">All Updates</h3>
-<div class="mb-8 overflow-x-auto">
-	<table class="table">
-		<thead>
-			<tr>
-				<th>#</th>
-				<th>Thumb</th>
-				<th>Title</th>
-				<th>Chapter</th>
-				<th>Volume</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each data.pages as obj (obj.page.id)}
-				<tr class="hover:bg-base-300">
-					<td>{obj.page.pagenum}</td>
-					<th>
-						<a href={resolve(`/comic/${obj.page.slug}`)}>
-							<img src={obj.page.thumb} alt={obj.page.title} width="100px" />
-						</a>
-					</th>
-					<th>{obj.page.title}</th>
-					<th>Chapter {obj.chapter.chapnum}</th>
-					<th>Volume {obj.volume.volnum}</th>
-					<th>Actions</th>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
-</div>
