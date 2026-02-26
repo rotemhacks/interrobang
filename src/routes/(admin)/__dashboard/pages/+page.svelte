@@ -5,13 +5,28 @@
 	import { Pencil, Eye } from '@lucide/svelte';
 
 	const { data } = $props();
+
+	// add page modal
+	let dialog: HTMLDialogElement;
+
+	// pagination for comic pages table
+	let rowsPerPage = $state(10);
+	const maxVisiblePages = 10;
+	let currentPage = $state(1);
+	const totalPages = $derived(Math.ceil(data.pages.length / rowsPerPage));
+
+	const paginatedData = $derived(
+		data.pages.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+	);
+	const startPage = $derived(Math.floor((currentPage - 1) / maxVisiblePages) * maxVisiblePages + 1);
+	const endPage = $derived(Math.min(startPage + maxVisiblePages - 1, totalPages));
 </script>
 
 <h2 class="mb-4 text-xl">Manage Pages</h2>
 
 <!-- You can open the modal using ID.showModal() method -->
-<button class="btn" onclick={page_form.showModal()}>Add a Page</button>
-<dialog id="page_form" class="modal">
+<button class="btn" onclick={() => dialog.showModal()}>Add a Page</button>
+<dialog bind:this={dialog} class="modal">
 	<div class="modal-box w-11/12 max-w-5xl">
 		<form method="dialog">
 			<button class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm">✕</button>
@@ -21,8 +36,15 @@
 	</div>
 </dialog>
 
-<!-- TODO: Add pagination -->
-<h3 class="mt-10">All Updates</h3>
+<label class="my-8 flex flex-row items-baseline gap-4">
+	<span>Rows to show:</span>
+	<select name="rows" bind:value={rowsPerPage} class="select">
+		<option value={25}>25</option>
+		<option value={10} selected>10</option>
+		<option value={5}>5</option>
+	</select>
+</label>
+
 <div class="mb-8 w-4/5 overflow-x-auto">
 	<table class="table">
 		<thead>
@@ -36,7 +58,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each data.pages as obj (obj.page.id)}
+			{#each paginatedData as obj (obj.page.id)}
 				<tr>
 					<td>{obj.page.pagenum}</td>
 					<td>
@@ -60,4 +82,19 @@
 			{/each}
 		</tbody>
 	</table>
+	<nav class="pagination">
+		{#if startPage > 1}
+			<button onclick={() => (currentPage = startPage - 1)} class="btn"> ← </button>
+		{/if}
+
+		{#each Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i) as page (page)}
+			<button class:active={page === currentPage} onclick={() => (currentPage = page)} class="btn">
+				{page}
+			</button>
+		{/each}
+
+		{#if endPage < totalPages}
+			<button onclick={() => (currentPage = endPage + 1)} class="btn"> → </button>
+		{/if}
+	</nav>
 </div>

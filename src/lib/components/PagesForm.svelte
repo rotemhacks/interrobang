@@ -9,6 +9,7 @@
 	});
 	const { chapters, page } = $props();
 
+	// sort all this (This should be props)
 	let title = $state('');
 	let slug = $derived(createSlug(title));
 	let pagenum = $derived(page?.pagenum ? page?.pagenum + 1 : 1);
