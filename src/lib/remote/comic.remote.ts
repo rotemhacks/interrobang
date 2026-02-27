@@ -25,7 +25,7 @@ export const getPageBySlug = query(z.string(), async (slug) =>
 	db.select().from(pages).where(eq(pages.slug, slug))
 );
 
-export const getPReviousPageBySlug = query(z.string(), async (slug) =>
+export const getPreviousPageBySlug = query(z.string(), async (slug) =>
 	db.select().from(pages).where(eq(pages.next, slug))
 );
 
