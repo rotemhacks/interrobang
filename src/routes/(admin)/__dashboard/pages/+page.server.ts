@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
-import { chapters, pageInsertSchema, pages, volumes } from '$lib/server/db/schema.js';
-import { desc, eq, isNull } from 'drizzle-orm';
+import { pageInsertSchema, pages } from '$lib/server/db/schema.js';
+import { eq, isNull } from 'drizzle-orm';
 import { writeFile } from 'node:fs/promises';
 import { extname } from 'path';
 import sharp from 'sharp';
@@ -54,28 +54,4 @@ export const actions = {
 			return { success: false, err };
 		}
 	}
-};
-
-export const load = async () => {
-	// latest page for page number
-	const page = await db.select().from(pages).where(isNull(pages.next)).limit(1);
-	// chapters for.. chapters
-	const chaps = await db.select().from(chapters).orderBy(desc(chapters.chapnum));
-	// all pages for the table
-	const allPages = await db
-		.select({
-			page: pages,
-			chapter: chapters,
-			volume: volumes
-		})
-		.from(pages)
-		.innerJoin(chapters, eq(pages.chapterId, chapters.id))
-		.innerJoin(volumes, eq(chapters.volumeId, volumes.id))
-		.orderBy(desc(volumes.id), desc(chapters.id), desc(pages.pagenum));
-
-	return {
-		page: page[0],
-		chapters: chaps,
-		pages: allPages
-	};
 };

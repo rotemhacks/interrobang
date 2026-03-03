@@ -1,10 +1,18 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import PagesForm from '$lib/components/PagesForm.svelte';
+	import {
+		getAllChapters,
+		getAllPagesWithDetails,
+		getLatestPage
+	} from '$lib/remote/comic.remote.js';
 
 	import { Pencil, Eye } from '@lucide/svelte';
 
-	const { data } = $props();
+	// remote functions!!
+	const pages = await getAllPagesWithDetails(); // for table
+	const chapters = await getAllChapters(); // for form
+	const [page] = await getLatestPage(); // for latest page number
 
 	// add page modal
 	let dialog: HTMLDialogElement;
@@ -13,10 +21,10 @@
 	let rowsPerPage = $state(10);
 	const maxVisiblePages = 10;
 	let currentPage = $state(1);
-	const totalPages = $derived(Math.ceil(data.pages.length / rowsPerPage));
+	const totalPages = $derived(Math.ceil(pages.length / rowsPerPage));
 
 	const paginatedData = $derived(
-		data.pages.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+		pages.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
 	);
 	const startPage = $derived(Math.floor((currentPage - 1) / maxVisiblePages) * maxVisiblePages + 1);
 	const endPage = $derived(Math.min(startPage + maxVisiblePages - 1, totalPages));
@@ -32,7 +40,7 @@
 			<button class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm">✕</button>
 		</form>
 		<h3 class="text-lg font-bold">Add a Page</h3>
-		<PagesForm chapters={data.chapters} page={data.page} />
+		<PagesForm {chapters} {page} />
 	</div>
 </dialog>
 
