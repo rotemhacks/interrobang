@@ -1,58 +1,121 @@
 <script lang="ts">
-	import { createSlug } from '$lib/utils/stringUtils';
 	import { Carta, MarkdownEditor } from 'carta-md';
 	import 'carta-md/default.css'; /* Default theme */
 	import DOMPurify from 'isomorphic-dompurify';
+	import { untrack } from 'svelte';
 
 	const carta = new Carta({
 		sanitizer: DOMPurify.sanitize
 	});
-	const { chapters, page } = $props();
 
-	// sort all this (This should be props)
-	let title = $state('');
-	let slug = $derived(createSlug(title));
-	let pagenum = $derived(page?.pagenum ? page?.pagenum + 1 : 1);
+	const { chapters, pagenum, action, page = undefined } = $props();
+
 	let comment = $state('');
-	let chapterId = $state();
+
+	$effect(() => {
+		const p = page;
+		const pn = pagenum;
+		untrack(() => {
+			comment = p?.comment ?? '';
+			action.fields.pagenum.set(p?.pagenum ?? pn);
+			if (p) {
+				action.fields.title.set(p.title);
+				action.fields.chapterId.set(p.chapterId);
+				action.fields.id.set(p.id);
+			}
+		});
+	});
+
+	$effect(() => {
+		action.fields.comment.set(comment);
+	});
 </script>
 
-<form method="POST" enctype="multipart/form-data" class="flex w-lg flex-col gap-2">
-	<label>
-		<span>Page file:</span><span class="text-red-500">&nbsp;*</span>
-		<input type="file" name="file" class="file-input file-input-ghost" accept="image/*" required />
-	</label>
+<form {...action} enctype="multipart/form-data" class="flex flex-col gap-4">
+	{#if page}
+		<input {...action.fields.id.as('number')} type="hidden" />
+	{/if}
 
-	<label>
-		<span>Title:</span><span class="text-red-500">&nbsp;*</span>
-		<input type="text" name="title" class="input" bind:value={title} required />
-	</label>
+	<div class="flex flex-col gap-1">
+		<p class="text-sm font-medium">
+			Page file:{#if !page}
+				<span class="text-error">*</span>{/if}
+		</p>
+		<input
+			{...action.fields.file.as('file')}
+			class="file-input w-full"
+			accept="image/*"
+			required={!page}
+		/>
+	</div>
 
-	<label>
-		<span>Slug:</span><span class="text-red-500">&nbsp;*</span>
-		<input type="text" name="slug" class="input" bind:value={slug} required />
-	</label>
+	<div class="flex flex-col gap-1">
+		<p class="text-sm font-medium">Title: <span class="text-error">*</span></p>
+		<input {...action.fields.title.as('text')} class="input w-full" required />
+	</div>
 
-	<label>
-		<span>Page number:</span><span class="text-red-500">&nbsp;*</span>
-		<input type="number" name="pagenum" class="input" bind:value={pagenum} required />
-	</label>
+	<div class="grid grid-cols-2 gap-4">
+		<div class="flex flex-col gap-1">
+			<p class="text-sm font-medium">Page number: <span class="text-error">*</span></p>
+			<input {...action.fields.pagenum.as('number')} class="input w-full" required />
+		</div>
 
-	<label>
-		<span>Chapter:</span><span class="text-red-500">&nbsp;*</span>
-		<select name="chapterId" class="select" bind:value={chapterId} required>
-			{#each chapters as chap (chap.id)}
-				<option value={chap.id}>{chap.chapnum}: {chap.title}</option>
-			{/each}
-		</select>
-	</label>
+		<div class="flex flex-col gap-1">
+			<p class="text-sm font-medium">Chapter: <span class="text-error">*</span></p>
+			<select {...action.fields.chapterId.as('select')} class="select w-full" required>
+				{#each chapters as chap (chap.id)}
+					<option value={chap.id}>{chap.chapnum}: {chap.title}</option>
+				{/each}
+			</select>
+		</div>
+	</div>
 
-	<label>
-		<span>Comment:</span>
+	<div class="flex flex-col gap-1">
+		<p class="text-sm font-medium">Comment:</p>
 		<MarkdownEditor {carta} bind:value={comment} />
 		<!-- hidden field mirrors editor content -->
-		<input type="hidden" name="comment" value={comment} />
-	</label>
+		<input {...action.fields.comment.as('text')} type="hidden" />
+	</div>
 
-	<button class="btn btn-neutral">Create</button>
+	<div class="flex justify-end pt-2">
+		<button class="btn btn-neutral" type="submit">{page ? 'Save' : 'Create'}</button>
+	</div>
 </form>
+
+<style>
+	:global(.carta-theme__default) {
+		--border-color: var(--color-base-300);
+		--hover-color: var(--color-base-200);
+		--caret-color: var(--color-base-content);
+		--text-color: var(--color-base-content);
+		--border-color-dark: var(--color-base-300);
+		--hover-color-dark: var(--color-base-200);
+		--caret-color-dark: var(--color-base-content);
+		--text-color-dark: var(--color-base-content);
+	}
+
+	:global(.carta-theme__default.carta-editor) {
+		border-radius: var(--radius-field, 0.5rem);
+		background-color: var(--color-base-100);
+	}
+
+	:global(.carta-theme__default .carta-toolbar) {
+		background-color: var(--color-base-200);
+		border-color: var(--color-base-300);
+	}
+
+	:global(.carta-theme__default button) {
+		color: var(--color-base-content);
+	}
+
+	:global(.carta-theme__default .carta-input),
+	:global(.carta-theme__default .carta-renderer) {
+		height: 15rem;
+		background-color: var(--color-base-100);
+		color: var(--color-base-content);
+	}
+
+	:global(.carta-theme__default .carta-input textarea) {
+		color: var(--color-base-content);
+	}
+</style>

@@ -2,6 +2,8 @@
 	import { resolve } from '$app/paths';
 	import PagesForm from '$lib/components/PagesForm.svelte';
 	import {
+		addNewPage,
+		editPage,
 		getAllChapters,
 		getAllPagesWithDetails,
 		getLatestPage
@@ -12,10 +14,14 @@
 	// remote functions!!
 	const pages = await getAllPagesWithDetails(); // for table
 	const chapters = await getAllChapters(); // for form
-	const [page] = await getLatestPage(); // for latest page number
+	const [latestPage] = await getLatestPage(); // for latest page number
 
 	// add page modal
 	let dialog: HTMLDialogElement;
+
+	// edit page modal
+	let editDialog: HTMLDialogElement;
+	let editingPage = $state<(typeof pages)[number]['page'] | null>(null);
 
 	// pagination for comic pages table
 	let rowsPerPage = $state(10);
@@ -35,12 +41,31 @@
 <!-- You can open the modal using ID.showModal() method -->
 <button class="btn" onclick={() => dialog.showModal()}>Add a Page</button>
 <dialog bind:this={dialog} class="modal">
-	<div class="modal-box w-11/12 max-w-5xl">
+	<div class="modal-box w-3/4 max-w-3xl">
 		<form method="dialog">
 			<button class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm">✕</button>
 		</form>
 		<h3 class="text-lg font-bold">Add a Page</h3>
-		<PagesForm {chapters} {page} />
+		<PagesForm
+			{chapters}
+			pagenum={latestPage?.pagenum ? latestPage?.pagenum + 1 : 1}
+			action={addNewPage}
+		/>
+	</div>
+</dialog>
+
+<dialog bind:this={editDialog} class="modal">
+	<div class="modal-box w-3/4 max-w-3xl">
+		<form method="dialog">
+			<button class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm">✕</button>
+		</form>
+		<h3 class="text-lg font-bold">Edit Page</h3>
+		<PagesForm
+			{chapters}
+			pagenum={editingPage?.pagenum ?? 1}
+			action={editPage}
+			page={editingPage}
+		/>
 	</div>
 </dialog>
 
@@ -77,8 +102,13 @@
 					<td>Volume {obj.volume.volnum}</td>
 					<td>
 						<div class="flex h-full flex-row gap-2">
-							<button class="btn btn-square btn-ghost">
-								<!-- TODO: Make this load the info in the modal -->
+							<button
+								class="btn btn-square btn-ghost"
+								onclick={() => {
+									editingPage = obj.page;
+									editDialog.showModal();
+								}}
+							>
 								<Pencil />
 							</button>
 							<a href={resolve(`/comic/${obj.page.slug}`)} class="btn btn-square btn-ghost">
