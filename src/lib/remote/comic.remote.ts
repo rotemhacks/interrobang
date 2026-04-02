@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 export const getAllPages = query(async () => db.query.pages.findMany());
 export const getAllChapters = query(async () => db.query.chapters.findMany());
-export const getAllVolumes = query(async () => db.query.chapters.findMany());
+export const getAllVolumes = query(async () => db.query.volumes.findMany());
 
 export const getAllPagesWithDetails = query(async () =>
 	db

@@ -50,6 +50,7 @@
 			{chapters}
 			pagenum={latestPage?.pagenum ? latestPage?.pagenum + 1 : 1}
 			action={addNewPage}
+			onSuccess={() => { dialog.close(); location.reload(); }}
 		/>
 	</div>
 </dialog>
@@ -65,6 +66,7 @@
 			pagenum={editingPage?.pagenum ?? 1}
 			action={editPage}
 			page={editingPage}
+			onSuccess={() => { editDialog.close(); location.reload(); }}
 		/>
 	</div>
 </dialog>

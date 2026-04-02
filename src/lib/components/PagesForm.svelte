@@ -8,7 +8,7 @@
 		sanitizer: DOMPurify.sanitize
 	});
 
-	const { chapters, pagenum, action, page = undefined } = $props();
+	const { chapters, pagenum, action, page = undefined, onSuccess = undefined } = $props();
 
 	let comment = $state('');
 
@@ -28,6 +28,12 @@
 
 	$effect(() => {
 		action.fields.comment.set(comment);
+	});
+
+	$effect(() => {
+		if (action.result?.success === true) {
+			onSuccess?.();
+		}
 	});
 </script>
 

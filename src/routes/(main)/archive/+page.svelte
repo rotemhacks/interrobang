@@ -1,12 +1,13 @@
 <script>
 	import { resolve } from '$app/paths';
+	import { getAllPagesForArchive } from '$lib/remote/comic.remote';
 
-	const { data } = $props();
+	const volumes = await getAllPagesForArchive();
 </script>
 
 <div class="mt-4 flex w-full flex-col gap-4 self-start">
 	<p>Start reading from:</p>
-	{#each data.volumes as vol (vol.id)}
+	{#each volumes as vol (vol.id)}
 		<div class="rounded-lg bg-primary p-2"><span>{vol.volnum}: {vol.title}</span></div>
 		{#each vol.chapters as chapter (chapter.id)}
 			<div class="collapse-arrow collapse border border-base-300 bg-base-100">
