@@ -12,6 +12,8 @@
 		Sun,
 		Moon
 	} from '@lucide/svelte';
+	import { authClient } from '$lib/auth-client';
+	import { goto } from '$app/navigation';
 
 	let { children } = $props();
 
@@ -49,6 +51,20 @@
 			{:else}
 				<Sun size={18} />
 			{/if}
+		</button>
+		<button
+			class="btn ml-4 btn-ghost"
+			onclick={async () => {
+				await authClient.signOut({
+					fetchOptions: {
+						onSuccess: () => {
+							goto(resolve('/auth/login')); // redirect to login page
+						}
+					}
+				});
+			}}
+		>
+			Sign Out
 		</button>
 	</header>
 
