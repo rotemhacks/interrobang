@@ -11,7 +11,9 @@
 </script>
 
 {#if data.page?.url}
-	<img src={data.page.url} alt={data.page.title} class="w-full max-w-7xl" />
+	<div class="card w-full overflow-hidden shadow-md">
+		<img src={data.page.url} alt={data.page.title} class="w-full max-w-7xl" />
+	</div>
 {/if}
 
 <div class="join mt-2 grid grid-cols-4 md:w-4/5">
